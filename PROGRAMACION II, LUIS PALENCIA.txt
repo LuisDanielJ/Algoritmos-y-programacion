@@ -1,0 +1,356 @@
+Universidad Alonso de Ojeda
+Materia: Algoritmos y Programación II
+Nombre: Luis Palencia
+C.I 29926968
+
+Actividad:
+
+1.- Crea un programa que:
+
+Guarde un array de 3 estructuras Alumno (con nombre y nota) en un archivo binario.
+
+Lea el archivo y muestre los datos en pantalla.
+
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char nombre[50];
+    float nota;
+} Alumno;
+
+void guardarAlumnos(const char *filename) {
+    Alumno alumnos[3] = {
+        {"Juan Perez", 8.5},
+        {"Maria Gomez", 9.2},
+        {"Carlos Ruiz", 7.8}
+    };
+    
+    FILE *file = fopen(filename, "wb");
+    if (file == NULL) {
+        printf("Error al abrir el archivo para escritura.\n");
+        return;
+    }
+    
+    fwrite(alumnos, sizeof(Alumno), 3, file);
+    fclose(file);
+}
+
+void leerAlumnos(const char *filename) {
+    Alumno alumnos[3];
+    
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        printf("Error al abrir el archivo para lectura.\n");
+        return;
+    }
+    
+    fread(alumnos, sizeof(Alumno), 3, file);
+    fclose(file);
+    
+    printf("Datos de los alumnos:\n");
+    for (int i = 0; i < 3; i++) {
+        printf("Nombre: %s, Nota: %.2f\n", alumnos[i].nombre, alumnos[i].nota);
+    }
+}
+
+int main() {
+    const char *filename = "alumnos.bin";
+    guardarAlumnos(filename);
+    leerAlumnos(filename);
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2.- Crea un programa que:
+
+Guarde un número entero (int) en un archivo binario numero.bin.
+
+Luego lo lea y muestre en pantalla.
+
+
+#include <stdio.h>
+
+void guardarEntero(const char *filename, int numero) {
+    FILE *file = fopen(filename, "wb");
+    if (file == NULL) {
+        printf("Error al abrir el archivo para escritura.\n");
+        return;
+    }
+    
+    fwrite(&numero, sizeof(int), 1, file);
+    fclose(file);
+}
+
+void leerEntero(const char *filename) {
+    int numero;
+    
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        printf("Error al abrir el archivo para lectura.\n");
+        return;
+    }
+    
+    fread(&numero, sizeof(int), 1, file);
+    fclose(file);
+    
+    printf("El numero leido es: %d\n", numero);
+}
+
+int main() {
+    const char *filename = "numero.bin";
+    int numero = 42;
+    
+    guardarEntero(filename, numero);
+    leerEntero(filename);
+    
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3.- Escribe un programa que:
+
+Copie el contenido de un archivo origen.txt a otro llamado copia.txt.
+
+Verifique si el archivo origen existe antes de copiar.
+
+#include <stdio.h>
+
+int main() {
+    FILE *archivo_origen, *archivo_copia;
+    char caracter;
+
+    archivo_origen = fopen("origen.txt", "r");
+
+    if (archivo_origen == NULL) {
+        printf("El archivo origen.txt no existe.\n");
+        return 1;
+    }
+
+    archivo_copia = fopen("copia.txt", "w");
+    if (archivo_copia == NULL) {
+        printf("Error al crear el archivo copia.txt.\n");
+        fclose(archivo_origen);
+        return 1;
+    }
+
+    while ((caracter = fgetc(archivo_origen)) != EOF) {
+        fprintf(archivo_copia, "%c", caracter);
+    }
+
+    fclose(archivo_origen);
+    fclose(archivo_copia);
+
+    printf("El archivo se ha copiado con exito.\n");
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4.- Crea un programa que:
+
+Defina una estructura Alumno con nombre, edad y promedio.
+
+Guarde un array de 3 alumnos en un archivo binario alumnos.dat.
+
+Luego lo lea y muestre los datos.
+
+
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char nombre[50];
+    int edad;
+    float promedio;
+} Alumno;
+
+void guardarAlumnos(char *filename) {
+    Alumno alumnos[3] = {
+        {"Ana Torres", 20, 8.7},
+        {"Luis Mendez", 21, 7.9},
+        {"Sofia Castro", 19, 9.1}
+    };
+    
+    FILE *file = fopen(filename, "wb");
+    if (file == NULL) {
+        printf("Error al abrir el archivo para escritura.\n");
+        return;
+    }
+    
+    fwrite(alumnos, sizeof(Alumno), 3, file);
+    fclose(file);
+}
+
+void leerAlumnos(char *filename) {
+    Alumno alumnos[3];
+    
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        printf("Error al abrir el archivo para lectura.\n");
+        return;
+    }
+    
+    fread(alumnos, sizeof(Alumno), 3, file);
+    fclose(file);
+    
+    printf("Datos de los alumnos:\n");
+    for (int i = 0; i < 3; i++) {
+        printf("Nombre: %s, Edad: %d, Promedio: %.2f\n", 
+               alumnos[i].nombre, alumnos[i].edad, alumnos[i].promedio);
+    }
+}
+
+int main() {
+    char *filename = "alumnos.dat";
+    guardarAlumnos(filename);
+    leerAlumnos(filename);
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+5.- Modifica el ejercicio anterior para que:
+
+Permita buscar un alumno por nombre en alumnos.dat.
+
+Muestre sus datos si existe, o un mensaje de error si no.
+
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char nombre[50];
+    int edad;
+    float promedio;
+} Alumno;
+
+void guardarAlumnos(char *filename) {
+    Alumno alumnos[3] = {
+        {"Ana Torres", 20, 8.7},
+        {"Luis Mendez", 21, 7.9},
+        {"Sofia Castro", 19, 9.1}
+    };
+    
+    FILE *file = fopen(filename, "wb");
+    if (file == NULL) {
+        printf("Error al abrir el archivo para escritura.\n");
+        return;
+    }
+    
+    fwrite(alumnos, sizeof(Alumno), 3, file);
+    fclose(file);
+}
+
+void buscarAlumno(char *filename, char *nombre_buscar) {
+    Alumno alumno;
+    int i;
+
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        printf("Error al abrir el archivo para lectura.\n");
+        return;
+    }
+
+    while (fread(&alumno, sizeof(Alumno), 1, file) == 1) {
+        for (i = 0; nombre_buscar[i] != '\0' && alumno.nombre[i] != '\0'; i++) {
+            if (nombre_buscar[i] != alumno.nombre[i]) {
+                break;
+            }
+        }
+        if (nombre_buscar[i] == '\0' && alumno.nombre[i] == '\0') {
+            printf("Alumno encontrado:\n");
+            printf("Nombre: %s\n", alumno.nombre);
+            printf("Edad: %d\n", alumno.edad);
+            printf("Promedio: %.2f\n", alumno.promedio);
+            fclose(file); // Cierra el archivo antes de salir
+            return;
+        }
+    }
+    fclose(file);
+    printf("El alumno '%s' no se encuentra en el archivo.\n", nombre_buscar);
+}
+
+int main() {
+    char *filename = "alumnos.dat";
+    char nombre_buscar[50];
+    int i = 0;
+    char c;
+
+    guardarAlumnos(filename);
+
+    printf("Ingrese el nombre del alumno que desea buscar: ");
+    c = '\0';
+    while (c != '\n') {
+        c = getchar();
+        if (c == '\n') {
+            break;
+        }
+        nombre_buscar[i++] = c;
+    }
+    nombre_buscar[i] = '\0';
+
+    buscarAlumno(filename, nombre_buscar);
+
+    return 0;
+}
